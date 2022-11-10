@@ -8,14 +8,15 @@ L.debug("running");
 if (location.href.startsWith("https://messages.google.com/web")) {
   const injected = document.createElement('script');
   injected.src = browser.runtime.getURL('messagesWatcher.js');
+  L.debug(`injected ${injected.src} into page`);
   injected.onload = function() {this.remove()};
   (document.head || document.documentElement).appendChild(injected);
   window.addEventListener("message", (e) => {
     if (e.data.sender !== EVENT_NAME) {
       L.warn("post message not for us", e.data);
     } else {
-      L.debug("recieved notif post message, passing to browser");
-      browser.runtime.sendMessage({"notification details": {title, opt}});
+      L.debug("received notif post message, passing to browser");
+      browser.runtime.sendMessage({title: e.data.title, body: e.data.opt.body});
     }
   })
 }
