@@ -4,7 +4,7 @@ const L = {
   debug: (...args) => console.debug("%c[M4W2FA]", "color: gray", ...args),
 }
 const EVENT_NAME = "M4W2FA";
-L.debug("running");
+
 if (location.href.startsWith("https://messages.google.com/web")) {
   const injected = document.createElement('script');
   injected.src = browser.runtime.getURL('messagesWatcher.js');
@@ -19,4 +19,20 @@ if (location.href.startsWith("https://messages.google.com/web")) {
       browser.runtime.sendMessage({title: e.data.title, body: e.data.opt.body});
     }
   })
+} else {
+  L.log("awaiting possible code delivery");
+  function codeListener(code) {
+    const possibleInputEvents = ["input", "blur", "keyup", "paste"];
+    L.log("received information", code);
+    const elem = document.activeElement;
+    if (elem.tag === "input") {
+      L.log("current element is an input, attempting to set input");
+      elem.value = code;
+      // trigger events so site recognizes the value was changed
+      for (const event of possibleInputEvents) {
+        elem.dispatchEvent(new Event('change', { 'bubbles': true }));
+      }
+    }
+  }
+  browser.runtime.onMessage.addListener(codeListener)
 }
