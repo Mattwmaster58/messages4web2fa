@@ -12,27 +12,20 @@ if (location.href.startsWith("https://messages.google.com/web")) {
   injected.onload = function() {this.remove()};
   (document.head || document.documentElement).appendChild(injected);
   window.addEventListener("message", (e) => {
-    if (e.data.sender !== EVENT_NAME) {
+    if (e.data.sender !== EVENT_NAME || e.data.command !== "copy") {
       L.warn("post message not for us", e.data);
     } else {
-      L.debug("received notif post message, passing to browser");
-      browser.runtime.sendMessage({title: e.data.title, body: e.data.opt.body});
+      copyText(e.data.text);
     }
   })
-} else {
-  L.log("awaiting possible code delivery");
-  function codeListener(codeMsg) {
-    copy(codeMsg.code);
-    L.log(`copied code: ${codeMsg.code}`);
-  }
-  browser.runtime.onMessage.addListener(codeListener)
 }
 
 // https://stackoverflow.com/questions/60348917/copy-text-to-clipboard-when-a-chrome-extension-s-browser-action-is-clicked
-function copy(text) {
+function copyText(text) {
   const ta = document.createElement('textarea');
   ta.style.cssText = 'opacity:0; position:fixed; width:1px; height:1px; top:0; left:0;';
   ta.value = text;
+  ta.id = EVENT_NAME;
   document.body.appendChild(ta);
   ta.focus();
   ta.select();
