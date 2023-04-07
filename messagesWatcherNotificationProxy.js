@@ -1,3 +1,4 @@
+// script we inject on messages.google.com that proxies the notification, notifying us of new notifications
 (function () {
   const L = {
     log: (...args) => console.log("%c[M4W2FA-window]", "color: green", ...args),
