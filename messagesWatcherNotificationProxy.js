@@ -1,10 +1,11 @@
 // script we inject on messages.google.com that proxies the notification, notifying us of new notifications
 (function () {
+  // prettier-ignore
   const L = {
-    log: (...args) => console.log("%c[M4W2FA-window]", "color: green", ...args),
-    warn: (...args) => console.log("%c[M4W2FA-window]", "color: yellow", ...args),
-    debug: (...args) => console.debug("%c[M4W2FA-window]", "color: gray", ...args),
-  }
+        log: (...args) => console.log("%c[M4W2FA-window]", "color: green", ...args),
+        warn: (...args) => console.log("%c[M4W2FA-window]", "color: yellow", ...args),
+        debug: (...args) => console.debug("%c[M4W2FA-window]", "color: gray", ...args),
+    };
   const EVENT_NAME = "M4W2FA";
 
   const TRIGGER_REGEX = /(^|\W)code($|\W)|(^|\W)passcode($|\W)/;
@@ -12,7 +13,7 @@
 
   function attempt2FACodeExtraction(messageBody) {
     if (TRIGGER_REGEX.exec(messageBody)) {
-      return CODE_REGEX.exec(messageBody)[0]
+      return CODE_REGEX.exec(messageBody)[0];
     }
   }
 
@@ -26,7 +27,9 @@
           command: "copy",
           text: code.toString(),
         });
-        return new target("2FA Intercept", {body: `${code} has been copied to your clipboard!`});
+        return new target("2FA Intercept", {
+          body: `${code} has been copied to your clipboard!`,
+        });
       } else {
         L.warn("could not extract code from body");
       }
@@ -41,7 +44,7 @@
       const [title, opt] = args;
       L.debug("notification received", title, opt);
       return notifyProxier(target, title, opt);
-    }
+    },
   };
 
   L.debug("setting window.Notification proxy");

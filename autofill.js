@@ -7,13 +7,13 @@
  * @param {boolean} setValue Re-set the value after focusing
  */
 function doFocusElement(el, setValue) {
-    if (setValue) {
-        var existingValue = el.value;
-        el.focus();
-        el.value !== existingValue && (el.value = existingValue);
-    } else {
-        el.focus();
-    }
+  if (setValue) {
+    var existingValue = el.value;
+    el.focus();
+    el.value !== existingValue && (el.value = existingValue);
+  } else {
+    el.focus();
+  }
 }
 
 /**
@@ -22,14 +22,16 @@ function doFocusElement(el, setValue) {
  * @returns {Event} A normalized event
  */
 function createKeyboardEvent(eventName) {
-    if (!('KeyboardEvent' in window)) {
-        L.error("failed to create KeyboardEvent because the browser doesn't appear to support it!");
-        return null;
-    }
-    return new window.KeyboardEvent(eventName, {
-        bubbles: true,
-        cancelable: false,
-    });
+  if (!("KeyboardEvent" in window)) {
+    L.error(
+      "failed to create KeyboardEvent because the browser doesn't appear to support it!"
+    );
+    return null;
+  }
+  return new window.KeyboardEvent(eventName, {
+    bubbles: true,
+    cancelable: false,
+  });
 }
 
 /**
@@ -38,13 +40,13 @@ function createKeyboardEvent(eventName) {
  * @param {HTMLElement} el
  */
 function setValueForElement(el) {
-    const valueToSet = el.value;
-    clickElement(el);
-    doFocusElement(el, false);
-    el.dispatchEvent(createKeyboardEvent('keydown'));
-    el.dispatchEvent(createKeyboardEvent('keypress'));
-    el.dispatchEvent(createKeyboardEvent('keyup'));
-    el.value !== valueToSet && (el.value = valueToSet);
+  const valueToSet = el.value;
+  clickElement(el);
+  doFocusElement(el, false);
+  el.dispatchEvent(createKeyboardEvent("keydown"));
+  el.dispatchEvent(createKeyboardEvent("keypress"));
+  el.dispatchEvent(createKeyboardEvent("keyup"));
+  el.value !== valueToSet && (el.value = valueToSet);
 }
 
 /**
@@ -53,19 +55,19 @@ function setValueForElement(el) {
  * @param {HTMLElement} el
  */
 function setValueForElementByEvent(el) {
-    const valueToSet = el.value,
-        ev1 = el.ownerDocument.createEvent('HTMLEvents'),
-        ev2 = el.ownerDocument.createEvent('HTMLEvents');
+  const valueToSet = el.value,
+    ev1 = el.ownerDocument.createEvent("HTMLEvents"),
+    ev2 = el.ownerDocument.createEvent("HTMLEvents");
 
-    el.dispatchEvent(createKeyboardEvent('keydown'));
-    el.dispatchEvent(createKeyboardEvent('keypress'));
-    el.dispatchEvent(createKeyboardEvent('keyup'));
-    ev2.initEvent('input', true, true);
-    el.dispatchEvent(ev2);
-    ev1.initEvent('change', true, true);
-    el.dispatchEvent(ev1);
-    el.blur();
-    el.value !== valueToSet && (el.value = valueToSet);
+  el.dispatchEvent(createKeyboardEvent("keydown"));
+  el.dispatchEvent(createKeyboardEvent("keypress"));
+  el.dispatchEvent(createKeyboardEvent("keyup"));
+  ev2.initEvent("input", true, true);
+  el.dispatchEvent(ev2);
+  ev1.initEvent("change", true, true);
+  el.dispatchEvent(ev1);
+  el.blur();
+  el.value !== valueToSet && (el.value = valueToSet);
 }
 
 /**
@@ -74,11 +76,11 @@ function setValueForElementByEvent(el) {
  * @returns {boolean} Returns true if the element was clicked and false if it was not able to be clicked
  */
 function clickElement(el) {
-    if (!el || (el && 'function' !== typeof el.click)) {
-        return false;
-    }
-    el.click();
-    return true;
+  if (!el || (el && "function" !== typeof el.click)) {
+    return false;
+  }
+  el.click();
+  return true;
 }
 
 /**
@@ -87,50 +89,57 @@ function clickElement(el) {
  * @returns {boolean} Returns true if we can see the element to apply styling.
  */
 function canSeeElementToStyle(el) {
-    var currentEl;
-    if (currentEl = animateTheFilling) {
-        a: {
-            currentEl = el;
-            for (var owner = el.ownerDocument, owner = owner ? owner.defaultView : {}, theStyle; currentEl && currentEl !== document;) {
-                theStyle = owner.getComputedStyle ? owner.getComputedStyle(currentEl, null) : currentEl.style;
-                if (!theStyle) {
-                    currentEl = true;
-                    break a;
-                }
-                if ('none' === theStyle.display || 'hidden' == theStyle.visibility) {
-                    currentEl = false;
-                    break a;
-                }
-                currentEl = currentEl.parentNode;
-            }
-            currentEl = currentEl === document;
+  var currentEl;
+  if ((currentEl = animateTheFilling)) {
+    a: {
+      currentEl = el;
+      for (
+        var owner = el.ownerDocument,
+          owner = owner ? owner.defaultView : {},
+          theStyle;
+        currentEl && currentEl !== document;
+
+      ) {
+        theStyle = owner.getComputedStyle
+          ? owner.getComputedStyle(currentEl, null)
+          : currentEl.style;
+        if (!theStyle) {
+          currentEl = true;
+          break a;
         }
+        if ("none" === theStyle.display || "hidden" == theStyle.visibility) {
+          currentEl = false;
+          break a;
+        }
+        currentEl = currentEl.parentNode;
+      }
+      currentEl = currentEl === document;
     }
-    // START MODIFICATION
-    if (el && !el.type && el.tagName.toLowerCase() === 'span') {
-        return true;
-    }
-    // END MODIFICATION
-    if (currentEl) {
-      const inputTypes = ['email', 'text', 'password', 'number', 'tel', 'url'];
-      return inputTypes.includes(el.type || '');
-    } else {
-      return false;
-    }
+  }
+  // START MODIFICATION
+  if (el && !el.type && el.tagName.toLowerCase() === "span") {
+    return true;
+  }
+  // END MODIFICATION
+  if (currentEl) {
+    const inputTypes = ["email", "text", "password", "number", "tel", "url"];
+    return inputTypes.includes(el.type || "");
+  } else {
+    return false;
+  }
 }
 
-
 function doAllFillOperations(el, afterValSetFunc) {
-    setValueForElement(el);
-    afterValSetFunc(el);
-    setValueForElementByEvent(el);
+  setValueForElement(el);
+  afterValSetFunc(el);
+  setValueForElementByEvent(el);
 
-    // START MODIFICATION
-    if (canSeeElementToStyle(el)) {
-        el.classList.add('com-m4w2fa-browser-animated-fill');
-        setTimeout(function () {
-            if (el) el.classList.remove('com-m4w2fa-browser-animated-fill');
-        }, styleTimeout);
-    }
-    // END MODIFICATION
+  // START MODIFICATION
+  if (canSeeElementToStyle(el)) {
+    el.classList.add("com-m4w2fa-browser-animated-fill");
+    setTimeout(function () {
+      if (el) el.classList.remove("com-m4w2fa-browser-animated-fill");
+    }, styleTimeout);
+  }
+  // END MODIFICATION
 }
