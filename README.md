@@ -6,7 +6,9 @@ Any attacker who has access to your computer would already be able to access 2FA
 it is a marginally worse idea than just having access to SMS from your computer.
 ### How does this work?
 
-In the Message for web page, `window.Notification` is proxied so we can observe whenever there's a notification. From this we are able to extract a 2FA code, which we can then automatically copied.
+On the Message for web page, `window.Notification` is proxied so we can observe whenever there's a notification. This proxy code runs in the context of the page, so we need to use `window.postMessage` to move this information around the app.
+
+Autofill works via various incantations of triggering events, most of which I adapted from the tried and true [Bitwarden addon client](https://github.com/bitwarden/clients/blob/master/apps/browser/src/autofill/content/autofill.js)
 
 ### todo
  - [ ] customizable regex code extraction
