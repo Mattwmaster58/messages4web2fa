@@ -15,7 +15,7 @@
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "js/background.js"
     ]
   },
   "content_scripts": [
@@ -24,13 +24,13 @@
         "<all_urls>"
       ],
       "js": [
-        "scripts/content.js"
+        "content.bundle.js"
       ],
       "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
-    "scripts/messagesWatcherNotificationProxy.js",
-    "script/autofill.js"
+    "js/messagesWatcherNotificationProxy.bundle.js",
+    "js/autofill.bundle.js"
   ]
 }
